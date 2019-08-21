@@ -1,0 +1,19 @@
+html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  background-color: #ffeeaa;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+canvas {
+  background-color: #333333;
+  max-width: 100vw;
+  max-height: 100vh;
+  line-height: 0
+}
