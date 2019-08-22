@@ -16,6 +16,9 @@ function createRoom() {
 }
 
 function update(map) {
+  for (let obstacle of map.obstacles) {
+    obstacle.step(map.layout)
+  }
   map.yuu.step(map.layout)
 }
 
@@ -23,11 +26,17 @@ function render(map) {
   room.clear()
   room.background.draw()
   map.yuu.draw()
+  for (let spawner of map.spawners) {
+    spawner.tick(map)
+  }
+  for (let obstacle of map.obstacles) {
+    obstacle.draw()
+  }
+  // block drawing
   if (global.debug) {
     let x = 0, y = 0
     for (let col of map.layout) {
       for (let cell of col) {
-        // block drawing
         if (cell == 1) {
           room.context.fillStyle = 'green'
           room.context.fillRect(
@@ -67,7 +76,7 @@ async function RunGame() {
   var objs = initObjects(sprites)
   yeet('Creating maps')
   var maps = initMaps(sprites, objs)
-  roomRestart(maps['Lv1'], objs)
+  roomRestart(maps['Lv1'], objs, sprites)
   yeet('Starting main')
   main(maps['Lv1'])
 }

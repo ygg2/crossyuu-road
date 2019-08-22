@@ -12,7 +12,7 @@ body {
 }
 
 canvas {
-  background-color: #333333;
+  background-color: #dddddd;
   max-width: 100vw;
   max-height: 100vh;
   line-height: 0

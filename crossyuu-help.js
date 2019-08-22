@@ -30,9 +30,33 @@ function Img(image, x, y) {
   }
 }
 
-function roomRestart(map, objs) {
+function roomRestart(map, objs, spr) {
   room.background = new Img(0, 0, map.background)
+  // add yuu
   map.yuu = objs.yuu
   map.yuu.cell.x = 1
   map.yuu.cell.y = 1
+  // add car spawners
+  map.spawners = []
+  map.obstacles = []
+  let x = 0
+  let y = 0
+  for (let col of map.layout) {
+    for (let cell of col) {
+      if (cell == 2) {
+        // car spawner right
+        map.spawners.push(
+          new Spawner(x, y, spr.yuu, 'car', 'right')
+        )
+      } else if (cell == 3) {
+        // car spawner left
+        map.spawners.push(
+          new Spawner(x, y, spr.yuu, 'car', 'left')
+        )
+      }
+      y++
+    }
+    y = 0
+    x++
+  }
 }
