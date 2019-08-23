@@ -11,11 +11,12 @@ window.global = {
     down: 'ArrowDown'
   },
   keyPressed: {},
-  gridsize: 64,
+  gridsize: 96,
   state: states.mainMenu,
   debug: true,
 }
 
 window.sprites = {
-  yuu: 'spr/flyuu.png'
+  yuu: 'spr/flyuu.png',
+  car: 'spr/car.png'
 }

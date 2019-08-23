@@ -36,6 +36,10 @@ function roomRestart(map, objs, spr) {
   map.yuu = objs.yuu
   map.yuu.cell.x = 1
   map.yuu.cell.y = 1
+  map.yuu.fromCell.x = 1
+  map.yuu.fromCell.y = 1
+  map.yuu.x = map.yuu.cell.x * global.gridsize
+  map.yuu.y = map.yuu.cell.y * global.gridsize
   // add car spawners
   map.spawners = []
   map.obstacles = []
@@ -43,15 +47,15 @@ function roomRestart(map, objs, spr) {
   let y = 0
   for (let col of map.layout) {
     for (let cell of col) {
-      if (cell == 2) {
+      if (cell == 3) {
         // car spawner right
         map.spawners.push(
-          new Spawner(x, y, spr.yuu, 'car', 'right')
+          new Spawner(x, y, spr.car, 'car', 'right')
         )
-      } else if (cell == 3) {
+      } else if (cell == 5) {
         // car spawner left
         map.spawners.push(
-          new Spawner(x, y, spr.yuu, 'car', 'left')
+          new Spawner(x, y, spr.car, 'car', 'left')
         )
       }
       y++

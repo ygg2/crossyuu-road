@@ -16,14 +16,24 @@ function createRoom() {
 }
 
 function update(map) {
+  let deletion = false
   for (let obstacle of map.obstacles) {
-    obstacle.step(map.layout)
+    if (obstacle.step(map.layout)) {
+      deletion = true
+    }
+  }
+  if (deletion) {
+    map.obstacles = map.obstacles.filter(inst => !inst.destroyed)
   }
   map.yuu.step(map.layout)
 }
 
 function render(map) {
   room.clear()
+  // move the view
+  let drawy = map.yuu.y - room.canvas.height/2
+  room.context.save()
+  room.context.translate(0, -drawy)
   room.background.draw()
   map.yuu.draw()
   for (let spawner of map.spawners) {
@@ -34,7 +44,8 @@ function render(map) {
   }
   // block drawing
   if (global.debug) {
-    let x = 0, y = 0
+    let x = 0,
+      y = 0
     for (let col of map.layout) {
       for (let cell of col) {
         if (cell == 1) {
@@ -44,7 +55,15 @@ function render(map) {
             y * global.gridsize,
             global.gridsize,
             global.gridsize
-          )
+          )/*
+        } else if (cell == -1) {
+          room.context.fillStyle = 'red'
+          room.context.fillRect(
+            x * global.gridsize,
+            y * global.gridsize,
+            global.gridsize,
+            global.gridsize
+          )*/
         }
         y++
       }
@@ -52,6 +71,7 @@ function render(map) {
       x++
     }
   }
+  room.context.restore()
 }
 
 function main(map) {
