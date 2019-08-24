@@ -36,6 +36,40 @@ function Spawner(x, y, sprite, type, dir) {
   }
 }
 
+function Confetti(x, y) {
+  this.x = x || 0
+  this.y = y || 0
+  this.hsp = iRandomRange(-8, 8)
+  this.vsp = iRandomRange(-8, -2)
+  let _r = iRandomRange(0, 255)
+  let _g = iRandomRange(0, 255)
+  let _b = iRandomRange(0, 255)
+  this.color = `rgb(${_r}, ${_g}, ${_b})`
+  this.angle = iRandomRange(0, 360)
+}
+Confetti.prototype.step = function() {
+  this.x += this.hsp
+  this.y += this.vsp
+  this.hsp = lerp(this.hsp, 0, 0.03)
+  this.vsp = Math.min(this.vsp + 0.2, 5)
+  this.angle += 3
+}
+Confetti.prototype.draw = function() {
+  let COSIZE = 12
+  room.context.fillStyle = this.color
+  room.context.beginPath()
+  for (var m = 0; m < 5; m++) {
+    var scale = Math.sin(this.x / 100 + this.y / 100)
+    var a = m == 0 ? 110 : m == 1 ? 70 : m == 2 ? 290 : m == 3 ? 250 : 110
+    room.context.lineTo(
+      this.x - lengthdir_x(COSIZE * scale, a + this.angle),
+      this.y + lengthdir_y(COSIZE, a + this.angle)
+    )
+  }
+  room.context.closePath()
+  room.context.fill()
+}
+
 function Character(img, inputs, x, y) {
   this.x = x * global.gridsize || 0
   this.y = y * global.gridsize || 0
@@ -68,7 +102,7 @@ Character.prototype.step = function(grid) {
   if (onGrid(this)) {
     if (this.cell.x != this.fromCell.x || this.cell.y != this.fromCell.y) {
       if (grid[this.fromCell.x][this.fromCell.y] == this.id)
-      grid[this.fromCell.x][this.fromCell.y] = 0
+        grid[this.fromCell.x][this.fromCell.y] = 0
     }
     this.hsp = 0
     this.vsp = 0
@@ -134,11 +168,58 @@ function initObjects(spr) {
       down: keyboardCheckPressed(global.keymap.down)
     }
   }
+  Player.prototype.destroy = function() {
+    game.state = states.mainMenu
+    this.checkInput = function() {
+      return this.input
+    }
+    this.image.visible = false
+    let _x = this.x
+    let _y = this.y
+    room.effects.push({
+      timer: 0,
+      duration: 100,
+      confetti: [],
+      step: function() {
+        if (this.timer == 1) {
+          for (var i = 0; i < 50; i++) {
+            this.confetti.push(
+              new Confetti(
+                _x + iRandomRange(-100, 100),
+                _y + iRandomRange(-100, 100)
+              )
+            )
+          }
+        }
+        for (let inst of this.confetti) {
+          inst.step()
+          inst.draw()
+        }
+      },
+      done: function() {
+        return this.timer >= this.duration
+      }
+    })
+  }
+  Player.prototype.restart = function(x, y) {
+    delete this.checkInput
+    this.cell.x = x
+    this.cell.y = y
+    this.fromCell.x = x
+    this.fromCell.y = y
+    this.x = x * global.gridsize
+    this.y = y * global.gridsize
+    this.image.visible = true
+  }
+  Player.prototype.setImage = function(sprite) {
+    this.image.image = spr[sprite]
+  }
 
   var objs = {
     yuu: new Player(spr.yuu),
     cars: []
   }
+  global.player = objs.yuu
   return objs
 }
 
@@ -148,6 +229,7 @@ function initMaps(spr, objs) {
     Lv1: {
       layout: [
         [1, 1, 3, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 1],

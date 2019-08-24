@@ -3,18 +3,51 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="crossyuu-style.css" rel="stylesheet">
+    <link href="crossyuu-style.css" rel="stylesheet" />
     <title>Crossyuu Road</title>
   </head>
 
   <body>
-    <canvas id="crossyuu-canvas" width="540" height="960">
-      It looks like your browser doesn't support canvas.
-    </canvas>
+    <div class="yuu-i-wrapper">
+      <canvas id="crossyuu-canvas" width="540" height="960">
+        It looks like your browser doesn't support canvas.
+      </canvas>
+      <div v-cloak id="game">
+        <div v-show="state == states.mainMenu">
+          <div class="yuu-i vertical container">
+            <div class="yuu-i top centre full-width padded">
+              <h1>CROSSYUU ROAD</h1>
+              <button class="button" @click="startLevel">Start</button>
+              <button class="button" @click="openShop">Costumes</button>
+            </div>
+          </div>
+        </div>
+        <div v-show="state == states.costumes">
+          <div class="yuu-i vertical container padded">
+            <h1>Costumes</h1>
+            <div class="horizontal container">
+              <button class="button" @click="viewCostume(-1)"><</button>
+              <div class="expand">
+                <div class="yuu-i centre">
+                  <h2>{{ costume.name }}</h2>
+                  <img :src="costume.image" :class="{ locked: !costume.unlocked }" />
+                  <h3>{{ costume.desc }}</h3>
+                  <p>{{ costume.effect }}</p>
+                  <button class="button" @click="mainMenu()">Done</button>
+                </div>
+              </div>
+              <button class="button" @click="viewCostume(1)">></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="crossyuu-help.js"></script>
     <script src="crossyuu-data.js"></script>
     <script src="crossyuu-init.js"></script>
     <script src="crossyuu-main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src="crossyuu-yuui.js"></script>
   </body>
 </html>

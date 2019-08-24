@@ -1,6 +1,7 @@
 function createRoom() {
   var room = {
     canvas: document.getElementById('crossyuu-canvas'),
+    effects: [],
     setup() {
       this.context = this.canvas.getContext('2d', { alpha: false })
       window.addEventListener('keydown', function(e) {
@@ -16,10 +17,17 @@ function createRoom() {
 }
 
 function update(map) {
+  for (let spawner of map.spawners) {
+    spawner.tick(map)
+  }
   let deletion = false
   for (let obstacle of map.obstacles) {
     if (obstacle.step(map.layout)) {
       deletion = true
+    }
+    if (map.layout[obstacle.cell.x][obstacle.cell.y] == -1) {
+      map.yuu.destroy()
+      map.layout[obstacle.cell.x][obstacle.cell.y] = 0
     }
   }
   if (deletion) {
@@ -31,14 +39,11 @@ function update(map) {
 function render(map) {
   room.clear()
   // move the view
-  let drawy = map.yuu.y - room.canvas.height/2
+  let drawy = map.yuu.y - room.canvas.height / 2
   room.context.save()
-  room.context.translate(0, -drawy)
+  room.context.translate(-global.xoffset, -drawy)
   room.background.draw()
   map.yuu.draw()
-  for (let spawner of map.spawners) {
-    spawner.tick(map)
-  }
   for (let obstacle of map.obstacles) {
     obstacle.draw()
   }
@@ -49,21 +54,13 @@ function render(map) {
     for (let col of map.layout) {
       for (let cell of col) {
         if (cell == 1) {
-          room.context.fillStyle = 'green'
+          room.context.fillStyle = 'rgba(0,255,0,.5)'
           room.context.fillRect(
             x * global.gridsize,
             y * global.gridsize,
             global.gridsize,
             global.gridsize
-          )/*
-        } else if (cell == -1) {
-          room.context.fillStyle = 'red'
-          room.context.fillRect(
-            x * global.gridsize,
-            y * global.gridsize,
-            global.gridsize,
-            global.gridsize
-          )*/
+          )
         }
         y++
       }
@@ -71,11 +68,22 @@ function render(map) {
       x++
     }
   }
+  let _any_done = false
+  for (let effect of room.effects) {
+    effect.timer++
+    effect.step()
+    if (effect.done()) {
+      _any_done = true
+    }
+  }
+  if (_any_done) {
+    room.effects = room.effects.filter(effect => !effect.done())
+  }
   room.context.restore()
 }
 
 function main(map) {
-  update(map)
+  if (!global.pause) update(map)
   render(map)
   rAF(() => main(map))
 }

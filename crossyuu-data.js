@@ -1,6 +1,7 @@
 window.states = {
   mainMenu: 0,
-  crossing: 1
+  crossing: 1,
+  costumes: 2
 }
 
 window.global = {
@@ -12,11 +13,14 @@ window.global = {
   },
   keyPressed: {},
   gridsize: 96,
-  state: states.mainMenu,
   debug: true,
+  pause: true
 }
+
+global.xoffset = (global.gridsize * 6 - 540) / 2
 
 window.sprites = {
   yuu: 'spr/flyuu.png',
-  car: 'spr/car.png'
+  car: 'spr/car.png',
+  flower_crown: 'spr/flower_crown.png'
 }

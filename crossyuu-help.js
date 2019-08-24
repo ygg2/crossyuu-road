@@ -4,6 +4,22 @@ function yeet(message) {
   }
 }
 
+function iRandomRange(n1, n2) {
+  return Math.floor(Math.random() * (n2 - n1 + 1)) + n1
+}
+
+function lerp(a, b, amt) {
+  return (1 - amt) * a + amt * b;
+}
+
+function lengthdir_x(len, dir) {
+  return len * Math.cos(dir * Math.PI / 180);
+}
+
+function lengthdir_y(len, dir) {
+  return len * Math.sin(dir * Math.PI / 180);
+}
+
 function keyboardCheckPressed(key) {
   if (key in global.keyPressed) {
     delete global.keyPressed[key]
@@ -34,12 +50,7 @@ function roomRestart(map, objs, spr) {
   room.background = new Img(0, 0, map.background)
   // add yuu
   map.yuu = objs.yuu
-  map.yuu.cell.x = 1
-  map.yuu.cell.y = 1
-  map.yuu.fromCell.x = 1
-  map.yuu.fromCell.y = 1
-  map.yuu.x = map.yuu.cell.x * global.gridsize
-  map.yuu.y = map.yuu.cell.y * global.gridsize
+  map.yuu.restart(1, 1)
   // add car spawners
   map.spawners = []
   map.obstacles = []

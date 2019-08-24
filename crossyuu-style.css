@@ -8,12 +8,88 @@ body {
   background-color: #ffeeaa;
   margin: 0;
   padding: 0;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  font-family: sans-serif;
+  color: white;
 }
 
 canvas {
   background-color: #dddddd;
   max-width: 100vw;
   max-height: 100vh;
-  line-height: 0
+  line-height: 0;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.button {
+  background: blue;
+  font-size: 1.5rem;
+  border: none;
+  border-radius: 1em;
+  padding: 0.5em 5%;
+}
+
+.button:hover {
+  background: rgb(72, 151, 255);
+}
+
+.yuu-i-wrapper {
+  width: 0;
+  height: 100vh;
+  padding-right: 56.25vh;
+  background-color: white;
+  position: relative;
+}
+
+.yuu-i {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.container.vertical {
+  flex-direction: column;
+}
+
+.container.horizontal {
+  flex-direction: row;
+}
+
+.centre {
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.yuu-i.top {
+  top: 30%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.padded {
+  box-sizing: border-box;
+  padding: 5%;
+}
+
+.expand {
+  flex-grow: 1;
+}
+
+.locked {
+  filter: grayscale(80%)
 }
