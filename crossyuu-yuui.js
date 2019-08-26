@@ -6,7 +6,7 @@ var game = new Vue({
     costumes: [
       {
         name: 'Default',
-        desc: 'Yuu can do it!',
+        desc: 'Yuu can definitely do it!',
         effect: 'No effect',
         image: sprites.yuu,
         spr: 'yuu',
@@ -38,7 +38,7 @@ var game = new Vue({
       },
       {
         name: 'Doll Yuu',
-        desc: 'Yikes! It moves!',
+        desc: 'Yikes! Did it just move?',
         effect: 'No effect',
         image: sprites.yuu,
         spr: 'yuu',
@@ -77,26 +77,35 @@ var game = new Vue({
         unlocked: false
       }
     ],
-    costumeIndex: 0
+    costumeIndex: 0,
+    usingCostume: 'Default',
+    forward: true // direction of card swap
   },
   computed: {
     costume() {
       return this.costumes[this.costumeIndex]
+    },
+    cardSwapEnter() {
+      return 'magictime spaceIn' + (this.forward ? 'Right' : 'Left')
+    },
+    cardSwapLeave() {
+      return 'magictime spaceOut' + (this.forward ? 'Left' : 'Right')
     }
   },
   methods: {
     mainMenu() {
-      if (this.costume.unlocked)
       this.state = states.mainMenu
-      else {
-        yeet('this aint unlocked fam')
+    },
+    selectCostume() {
+      if (this.costume.unlocked) {
+        this.usingCostume = this.costume.name
+        global.player.setImage(this.costume.spr)
       }
     },
     startLevel() {
       this.state = states.crossing
       global.keyPressed = {}
       global.pause = false
-      global.player.setImage(this.costume.spr)
       global.player.restart(1, 1)
     },
     openShop() {
@@ -104,6 +113,7 @@ var game = new Vue({
       global.pause = true
     },
     viewCostume(next) {
+      this.forward = next > 0 ? 1 : 0
       if (this.costumeIndex + next >= this.costumes.length) {
         this.costumeIndex = 0
       } else if (this.costumeIndex + next < 0) {
@@ -111,6 +121,28 @@ var game = new Vue({
       } else {
         this.costumeIndex += next
       }
+    },
+    unlock(currentCostume) {
+      currentCostume.unlocked = true
+      // 8 costume unlocks, default always unlocked
+      let _unlocks = 0
+      for (var i = 1; i < this.costumes.length; i++) {
+        _unlocks = _unlocks | this.costumes[i].unlocked;
+        _unlocks = _unlocks << 1;
+      }
+      // trim extra bit
+      _unlocks = _unlocks >> 1;
+      // save code
+      yeet(_unlocks.toString(16))
+      localStorage.setItem('crossyuu-save', _unlocks.toString(16))
+    }
+  },
+  created() {
+    // load costume unlocks
+    let _unlocks = localStorage.getItem('crossyuu-save') || 0
+    for (var i = this.costumes.length - 1; i > 0; i--) {
+      this.costumes[i].unlocked = _unlocks & 1
+      _unlocks = _unlocks >> 1
     }
   }
 })

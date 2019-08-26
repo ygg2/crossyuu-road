@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="crossyuu-style.css" rel="stylesheet" />
+    <link href="magic.min.css" rel="stylesheet" />
     <title>Crossyuu Road</title>
   </head>
 
@@ -24,21 +25,45 @@
         </div>
         <div v-show="state == states.costumes">
           <div class="yuu-i vertical container padded">
-            <h1>Costumes</h1>
+            <h3>Costumes</h3>
             <div class="horizontal container">
               <button class="button" @click="viewCostume(-1)"><</button>
               <div class="expand">
                 <div class="yuu-i centre">
-                  <h2>{{ costume.name }}</h2>
-                  <img :src="costume.image" :class="{ locked: !costume.unlocked }" />
-                  <h3>{{ costume.desc }}</h3>
-                  <p>{{ costume.effect }}</p>
-                  <button class="button" @click="mainMenu()">Done</button>
+                  <transition
+                    mode="out-in"
+                    :enter-active-class="cardSwapEnter"
+                    :leave-active-class="cardSwapLeave"
+                  >
+                    <div :key="costume">
+                      <h3>{{ costume.name }}</h3>
+                      <img
+                        :src="costume.image"
+                        :class="{ locked: !costume.unlocked }"
+                        class="image-costume"
+                      />
+                      <p>{{ costume.desc }}</p>
+                      <p v-if="costume.unlocked">{{ costume.effect }}</p>
+                      <p v-else>Effect unknown</p>
+                      <button
+                        v-if="costume.unlocked"
+                        class="button"
+                        @click="selectCostume()"
+                      >
+                        Select
+                      </button>
+                      <button v-else class="button" @click="unlock(costume)">
+                        Unlock
+                      </button>
+                    </div>
+                  </transition>
                 </div>
               </div>
               <button class="button" @click="viewCostume(1)">></button>
             </div>
+            <p v-show="usingCostume==costume.name">Selected</p>
           </div>
+          <button class="yuu-i button" @click="mainMenu">Back</button>
         </div>
       </div>
     </div>

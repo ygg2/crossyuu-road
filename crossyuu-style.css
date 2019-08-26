@@ -12,6 +12,7 @@ body {
   justify-content: center;
   font-family: sans-serif;
   color: white;
+  font-size: 4vh;
 }
 
 canvas {
@@ -21,16 +22,21 @@ canvas {
   line-height: 0;
 }
 
+p {
+  font-size: 3vh;
+}
+
 [v-cloak] {
   display: none;
 }
 
 .button {
   background: blue;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   border: none;
   border-radius: 1em;
   padding: 0.5em 5%;
+  margin: 0.5em;
 }
 
 .button:hover {
@@ -91,5 +97,9 @@ canvas {
 }
 
 .locked {
-  filter: grayscale(80%)
+  filter: grayscale(80%);
+}
+
+.image-costume {
+  max-height: 15vh;
 }
