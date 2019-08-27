@@ -14,6 +14,9 @@
         It looks like your browser doesn't support canvas.
       </canvas>
       <div v-cloak id="game">
+        <div class="yuu-i full-width padded">
+          <p>Coins: {{ coins }}</p>
+        </div>
         <div v-show="state == states.mainMenu">
           <div class="yuu-i vertical container">
             <div class="yuu-i top centre full-width padded">
@@ -35,7 +38,7 @@
                     :enter-active-class="cardSwapEnter"
                     :leave-active-class="cardSwapLeave"
                   >
-                    <div :key="costume">
+                    <div :key="costume.name">
                       <h3>{{ costume.name }}</h3>
                       <img
                         :src="costume.image"
@@ -48,12 +51,16 @@
                       <button
                         v-if="costume.unlocked"
                         class="button"
+                        :disabled="costume.name==usingCostume"
                         @click="selectCostume()"
                       >
-                        Select
+                        {{ costume.name==usingCostume ? 'Selected' : 'Select' }}
                       </button>
-                      <button v-else class="button" @click="unlock(costume)">
-                        Unlock
+                      <button
+                        v-else-if="costume.price"
+                        class="button"
+                        @click="unlock(costume)">
+                        Unlock for {{ costume.price }}
                       </button>
                     </div>
                   </transition>
@@ -61,7 +68,6 @@
               </div>
               <button class="button" @click="viewCostume(1)">></button>
             </div>
-            <p v-show="usingCostume==costume.name">Selected</p>
           </div>
           <button class="yuu-i button" @click="mainMenu">Back</button>
         </div>

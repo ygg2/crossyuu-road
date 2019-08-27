@@ -17,7 +17,7 @@ window.global = {
   pause: true
 }
 
-global.xoffset = (global.gridsize * 6 - 540) / 2
+global.xoffset = (global.gridsize * 9 - 540) / 2
 
 window.sprites = {
   yuu: 'spr/flyuu.png',

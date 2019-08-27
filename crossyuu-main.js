@@ -61,6 +61,22 @@ function render(map) {
             global.gridsize,
             global.gridsize
           )
+        } else if (cell == -1) {
+          room.context.fillStyle = 'rgba(255, 0, 0, .5)'
+          room.context.fillRect(
+            x * global.gridsize,
+            y * global.gridsize,
+            global.gridsize,
+            global.gridsize
+          )
+        } else if (cell == 9) {
+          room.context.fillStyle = 'rgba(255, 255, 0, .5)'
+          room.context.fillRect(
+            x * global.gridsize,
+            y * global.gridsize,
+            global.gridsize,
+            global.gridsize
+          )
         }
         y++
       }

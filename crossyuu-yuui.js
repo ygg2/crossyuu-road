@@ -3,6 +3,7 @@ var game = new Vue({
   data: {
     states: states,
     state: states.mainMenu,
+    coins: 0,
     costumes: [
       {
         name: 'Default',
@@ -18,7 +19,8 @@ var game = new Vue({
         effect: 'Speed x2',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: false
+        unlocked: false,
+        price: 10
       },
       {
         name: 'Flower Crown',
@@ -27,6 +29,7 @@ var game = new Vue({
         image: sprites.flower_crown,
         spr: 'flower_crown',
         unlocked: false,
+        price: 5
       },
       {
         name: 'Possession',
@@ -34,7 +37,8 @@ var game = new Vue({
         effect: 'One-time revival',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: false
+        unlocked: false,
+        price: 10
       },
       {
         name: 'Doll Yuu',
@@ -42,7 +46,8 @@ var game = new Vue({
         effect: 'No effect',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: false
+        unlocked: false,
+        price: 5
       },
       {
         name: 'Glitchy Yuu',
@@ -50,7 +55,8 @@ var game = new Vue({
         effect: 'Invincibility while glitching',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: false
+        unlocked: false,
+        price: 10
       },
       {
         name: 'Guren',
@@ -58,7 +64,8 @@ var game = new Vue({
         effect: 'No effect',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: false
+        unlocked: false,
+        price: 5
       },
       {
         name: 'Mitsuba',
@@ -66,7 +73,8 @@ var game = new Vue({
         effect: 'No effect',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: false
+        unlocked: false,
+        price: 5
       },
       {
         name: 'Seraph Yuu',
@@ -74,7 +82,8 @@ var game = new Vue({
         effect: 'Complete invincibility',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: false
+        unlocked: false,
+        price: null
       }
     ],
     costumeIndex: 0,
@@ -106,7 +115,7 @@ var game = new Vue({
       this.state = states.crossing
       global.keyPressed = {}
       global.pause = false
-      global.player.restart(1, 1)
+      global.player.restart(5, 3)
     },
     openShop() {
       this.state = states.costumes
@@ -123,8 +132,13 @@ var game = new Vue({
       }
     },
     unlock(currentCostume) {
+      if (this.coins < currentCostume.price) {
+        yeet('you dun have enuff coinz')
+        return
+      }
+      this.coins -= currentCostume.price
       currentCostume.unlocked = true
-      // 8 costume unlocks, default always unlocked
+      // save costumes
       let _unlocks = 0
       for (var i = 1; i < this.costumes.length; i++) {
         _unlocks = _unlocks | this.costumes[i].unlocked;

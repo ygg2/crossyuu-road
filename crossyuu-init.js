@@ -100,10 +100,7 @@ Character.prototype.draw = function() {
 }
 Character.prototype.step = function(grid) {
   if (onGrid(this)) {
-    if (this.cell.x != this.fromCell.x || this.cell.y != this.fromCell.y) {
-      if (grid[this.fromCell.x][this.fromCell.y] == this.id)
-        grid[this.fromCell.x][this.fromCell.y] = 0
-    }
+    this.clearOldPosition(grid)
     this.hsp = 0
     this.vsp = 0
     var input = this.checkInput()
@@ -117,6 +114,7 @@ Character.prototype.step = function(grid) {
       this.cell.x += horizontal
       if (grid[this.cell.x][this.cell.y] == 0) {
         grid[this.cell.x][this.cell.y] = this.id
+        this.clearOldPosition(grid)
       }
     } else if (vertical != 0 && !this.collision(grid, vertical, true)) {
       this.vsp = vertical * this.speed
@@ -124,6 +122,7 @@ Character.prototype.step = function(grid) {
       this.cell.y += vertical
       if (grid[this.cell.x][this.cell.y] == 0) {
         grid[this.cell.x][this.cell.y] = this.id
+        this.clearOldPosition(grid)
       }
     }
   }
@@ -131,25 +130,34 @@ Character.prototype.step = function(grid) {
   this.y += this.vsp
   return this.destroyed
 }
+Character.prototype.clearOldPosition = function(grid) {
+  if (this.cell.x != this.fromCell.x || this.cell.y != this.fromCell.y) {
+    if (grid[this.fromCell.x][this.fromCell.y] == this.id)
+      grid[this.fromCell.x][this.fromCell.y] = 0
+  }
+}
 Character.prototype.checkInput = function() {
   return this.input
 }
 Character.prototype.collision = function(grid, amount, vertical = false) {
   // block 1 spawner right 3 spawner left 5 collision 7 player -1
-  if (vertical) {
-    var space = grid[this.cell.x][this.cell.y + amount]
-  } else {
+  var toX = this.cell.x + (vertical ? 0 : amount)
+  var toY = this.cell.y + (vertical ? amount : 0)
+  if (!vertical) {
     // out of bounds check
     if (this.cell.x + amount < 0 || this.cell.x + amount >= grid.length) {
       this.destroyed = true
       return true
     }
-    var space = grid[this.cell.x + amount][this.cell.y]
   }
+  var space = grid[toX][toY]
   if (space & this.mask) {
-    return true
+    return this.collideWith(space, grid, toX, toY)
   }
   return false
+}
+Character.prototype.collideWith = function() {
+  return true
 }
 
 function initObjects(spr) {
@@ -167,6 +175,14 @@ function initObjects(spr) {
       up: keyboardCheckPressed(global.keymap.up),
       down: keyboardCheckPressed(global.keymap.down)
     }
+  }
+  Player.prototype.collideWith = function(id, grid, x, y) {
+    if (id == 9) { // coin
+      grid[x][y] = 0
+      game.coins++
+      return false
+    }
+    return true
   }
   Player.prototype.destroy = function() {
     game.state = states.mainMenu
@@ -225,15 +241,17 @@ function initObjects(spr) {
 
 function initMaps(spr, objs) {
   return {
-    Title: {},
     Lv1: {
       layout: [
-        [1, 1, 3, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 5, 1]
+        [0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9, 9, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0]
       ],
       background: false
     }

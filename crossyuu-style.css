@@ -43,6 +43,10 @@ p {
   background: rgb(72, 151, 255);
 }
 
+.button:disabled {
+  background: blue;
+}
+
 .yuu-i-wrapper {
   width: 0;
   height: 100vh;
@@ -98,6 +102,10 @@ p {
 
 .locked {
   filter: grayscale(80%);
+}
+
+.unclickable {
+  pointer-events: none;
 }
 
 .image-costume {
