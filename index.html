@@ -3,6 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Varela+Round&display=swap"
+      rel="stylesheet"
+    />
     <link href="crossyuu-style.css" rel="stylesheet" />
     <link href="magic.min.css" rel="stylesheet" />
     <title>Crossyuu Road</title>
@@ -14,69 +18,113 @@
         It looks like your browser doesn't support canvas.
       </canvas>
       <div v-cloak id="game">
-        <div class="yuu-i full-width padded">
+        <div v-show="state!=states.titleScreen" class="yuu-i padded">
           <p>Coins: {{ coins }}</p>
         </div>
-        <div v-show="state == states.mainMenu">
+        <div v-show="state==states.titleScreen">
           <div class="yuu-i vertical container">
+            <h1>CROSSYUU ROAD</h1>
+            <div class="yuu-i top centre full-width">
+              <button class="button" @click="mainMenu">Play</button>
+            </div>
+          </div>
+        </div>
+        <div v-show="state==states.mainMenu">
+          <div class="yuu-i container">
             <div class="yuu-i top centre full-width padded">
-              <h1>CROSSYUU ROAD</h1>
-              <button class="button" @click="startLevel">Start</button>
+              <div v-if="lastLevel!=null">
+                <button class="button" @click="startLevel(lastLevel)">
+                  Restart Level
+                </button>
+              </div>
+              <button class="button" @click="levelSelect">Level Select</button>
               <button class="button" @click="openShop">Costumes</button>
             </div>
           </div>
         </div>
-        <div v-show="state == states.costumes">
-          <div class="yuu-i vertical container padded">
-            <h3>Costumes</h3>
-            <div class="horizontal container">
-              <button class="button" @click="viewCostume(-1)"><</button>
-              <div class="expand">
-                <div class="yuu-i centre">
-                  <transition
-                    mode="out-in"
-                    :enter-active-class="cardSwapEnter"
-                    :leave-active-class="cardSwapLeave"
-                  >
-                    <div :key="costume.name">
-                      <h3>{{ costume.name }}</h3>
-                      <img
-                        :src="costume.image"
-                        :class="{ locked: !costume.unlocked }"
-                        class="image-costume"
-                      />
-                      <p>{{ costume.desc }}</p>
-                      <p v-if="costume.unlocked">{{ costume.effect }}</p>
-                      <p v-else>Effect unknown</p>
-                      <button
-                        v-if="costume.unlocked"
-                        class="button"
-                        :disabled="costume.name==usingCostume"
-                        @click="selectCostume()"
-                      >
-                        {{ costume.name==usingCostume ? 'Selected' : 'Select' }}
-                      </button>
-                      <button
-                        v-else-if="costume.price"
-                        class="button"
-                        @click="unlock(costume)">
-                        Unlock for {{ costume.price }}
-                      </button>
-                    </div>
-                  </transition>
-                </div>
-              </div>
-              <button class="button" @click="viewCostume(1)">></button>
+        <div v-show="state==states.levelEnd">
+          <div class="yuu-i vertical container">
+            <div class="yuu-i top centre full-width">
+              <h1 class="magictime spaceInUp">You win!</h1>
+              <button class="button" @click="startLevel(lastLevel+1)">
+                Continue
+              </button>
+              <button class="button" @click="mainMenu">Menu</button>
             </div>
           </div>
-          <button class="yuu-i button" @click="mainMenu">Back</button>
         </div>
+        <div v-show="state==states.levelSelect">
+          <button class="yuu-i button" @click="mainMenu">Back</button>
+          <div class="yuu-i top centre full-width padded">
+            <div class="container">
+              <div v-for="map, index of maps" class="level-select">
+                <button
+                  class="button full-width magictime swashIn"
+                  @click="startLevel(index)"
+                >
+                  {{ index + 1 }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <transition name="fade">
+          <div v-show="state==states.costumes">
+            <div class="yuu-i vertical container padded primary">
+              <h3>Costumes</h3>
+              <div class="horizontal container">
+                <button class="button" @click="viewCostume(-1)"><</button>
+                <div class="expand">
+                  <div class="yuu-i centre">
+                    <transition
+                      mode="out-in"
+                      :enter-active-class="cardSwapEnter"
+                      :leave-active-class="cardSwapLeave"
+                    >
+                      <div :key="costume.name">
+                        <h3>{{ costume.name }}</h3>
+                        <img
+                          :src="costume.image"
+                          :class="{ locked: !costume.unlocked }"
+                          class="image-costume"
+                        />
+                        <p v-if="costume.unlocked">{{ costume.desc }}</p>
+                        <p v-if="costume.unlocked">{{ costume.effect }}</p>
+                        <p v-else>Effect unknown</p>
+                        <button
+                          v-if="costume.unlocked"
+                          class="button"
+                          :disabled="costume.name==usingCostume"
+                          @click="selectCostume()"
+                        >
+                          {{
+                            costume.name == usingCostume ? 'Selected' : 'Select'
+                          }}
+                        </button>
+                        <button
+                          v-else-if="costume.price"
+                          class="button"
+                          :disabled="coins < costume.price"
+                          @click="unlock(costume)"
+                        >
+                          Unlock ({{ costume.price }})
+                        </button>
+                      </div>
+                    </transition>
+                  </div>
+                </div>
+                <button class="button" @click="viewCostume(1)">></button>
+              </div>
+            </div>
+            <button class="yuu-i button" @click="mainMenu">Back</button>
+          </div>
+        </transition>
       </div>
     </div>
 
     <script src="crossyuu-help.js"></script>
     <script src="crossyuu-data.js"></script>
-    <script src="crossyuu-init.js"></script>
+    <script src="crossyuu-objs.js"></script>
     <script src="crossyuu-main.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
     <script src="crossyuu-yuui.js"></script>

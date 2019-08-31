@@ -16,7 +16,8 @@ function createRoom() {
   return room
 }
 
-function update(map) {
+function update() {
+  var map = room.map
   for (let spawner of map.spawners) {
     spawner.tick(map)
   }
@@ -36,7 +37,8 @@ function update(map) {
   map.yuu.step(map.layout)
 }
 
-function render(map) {
+function render() {
+  var map = room.map
   room.clear()
   // move the view
   let drawy = map.yuu.y - room.canvas.height / 2
@@ -98,10 +100,10 @@ function render(map) {
   room.context.restore()
 }
 
-function main(map) {
-  if (!global.pause) update(map)
-  render(map)
-  rAF(() => main(map))
+function main() {
+  if (!global.pause) update()
+  render()
+  rAF(main)
 }
 
 var rAF =
@@ -120,9 +122,9 @@ async function RunGame() {
   var objs = initObjects(sprites)
   yeet('Creating maps')
   var maps = initMaps(sprites, objs)
-  roomRestart(maps['Lv1'], objs, sprites)
+  game.sprites = sprites
+  game.maps = maps
+  roomRestart(maps[0], sprites)
   yeet('Starting main')
-  main(maps['Lv1'])
+  main()
 }
-
-RunGame()

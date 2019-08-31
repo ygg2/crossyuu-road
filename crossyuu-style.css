@@ -1,3 +1,4 @@
+/* colors: lospec BLK NEO Palette */
 html {
   margin: 0;
   padding: 0;
@@ -5,7 +6,7 @@ html {
 }
 
 body {
-  background-color: #ffeeaa;
+  background-color: #c37289;
   margin: 0;
   padding: 0;
   display: flex;
@@ -13,11 +14,11 @@ body {
   font-family: sans-serif;
   color: white;
   font-size: 4vh;
+  font-family: 'Varela Round', sans-serif;
 }
 
 canvas {
-  background-color: #dddddd;
-  max-width: 100vw;
+  background-color: #3f1f3c;
   max-height: 100vh;
   line-height: 0;
 }
@@ -31,27 +32,41 @@ p {
 }
 
 .button {
-  background: blue;
+  background: #a52639;
+  color: #ff6eaf;
   font-size: 1.2rem;
   border: none;
   border-radius: 1em;
   padding: 0.5em 5%;
   margin: 0.5em;
+  font-size: 3vh;
+  font-family: 'Varela Round', sans-serif;
 }
 
 .button:hover {
-  background: rgb(72, 151, 255);
+  background: #ff6675;
+  color: #ffa5d5;
 }
 
 .button:disabled {
-  background: blue;
+  background: #723352;
+  color: #3f1f3c;
+}
+
+.primary {
+  background: #000000aa;
+}
+
+.level-select {
+  box-sizing: border-box;
+  width: 25%;
+  padding: 2%;
 }
 
 .yuu-i-wrapper {
   width: 0;
   height: 100vh;
   padding-right: 56.25vh;
-  background-color: white;
   position: relative;
 }
 
@@ -69,11 +84,11 @@ p {
   text-align: center;
 }
 
-.container.vertical {
+.vertical {
   flex-direction: column;
 }
 
-.container.horizontal {
+.horizontal {
   flex-direction: row;
 }
 
@@ -83,7 +98,7 @@ p {
   transform: translateX(-50%) translateY(-50%);
 }
 
-.yuu-i.top {
+.top {
   top: 30%;
 }
 
@@ -110,4 +125,13 @@ p {
 
 .image-costume {
   max-height: 15vh;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }

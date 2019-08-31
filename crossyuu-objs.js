@@ -19,20 +19,25 @@ function loadImages(images) {
   })
 }
 
-function Spawner(x, y, sprite, type, dir) {
+function Spawner(x, y, type, spr, offset) {
   this.x = x || 0
   this.y = y || 0
-  this.sprite = sprite
-  this.counter = 0
-  this.alarm = 200
-  this.spawn = {}
-  this.spawn[dir] = 1
-  this.tick = function(map) {
-    this.counter++
-    if (this.counter == this.alarm) {
-      this.counter = 0
-      map.obstacles.push(new Character(this.sprite, this.spawn, this.x, this.y))
-    }
+  this.counter = global.spawners[type].alarm - offset
+  this.alarm = global.spawners[type].alarm
+  this.spawn = global.spawners[type].spawn
+  this.speed = global.spawners[type].speed
+  this.sprites = spr
+  this.variance = Math.floor(this.alarm/2)
+}
+Spawner.prototype.tick = function(map) {
+  this.counter++
+  if (this.counter == this.alarm) {
+    this.counter = iRandomRange(0, this.variance)
+    // choose a random sprite
+    let _sprite = this.sprites[iRandomRange(0, this.sprites.length - 1)]
+    map.obstacles.push(
+      new Character(_sprite, this.spawn, this.x, this.y, this.speed)
+    )
   }
 }
 
@@ -70,14 +75,14 @@ Confetti.prototype.draw = function() {
   room.context.fill()
 }
 
-function Character(img, inputs, x, y) {
+function Character(img, inputs, x, y, speed) {
   this.x = x * global.gridsize || 0
   this.y = y * global.gridsize || 0
   this.image = new Img(img)
   this.visible = true
   this.hsp = 0
   this.vsp = 0
-  this.speed = 4
+  this.speed = speed || 4
   this.mask = 0
   if (!inputs) inputs = {}
   this.input = {
@@ -164,7 +169,7 @@ function initObjects(spr) {
   function Player(img) {
     Character.call(this, img)
     this.id = -1
-    this.mask = 1
+    this.mask = 3
     this.speed = 8
   }
   Player.prototype = new Character()
@@ -177,9 +182,19 @@ function initObjects(spr) {
     }
   }
   Player.prototype.collideWith = function(id, grid, x, y) {
-    if (id == 9) { // coin
+    if (id == 9) {
+      // coin
       grid[x][y] = 0
       game.coins++
+      localStorage.setItem('crossyuu-coin', game.coins)
+      return false
+    } else if (id == 2) {
+      // end
+      game.lastLevel = room.map.index
+      game.state = states.levelEnd
+      this.checkInput = function() {
+        return this.input
+      }
       return false
     }
     return true
@@ -237,23 +252,4 @@ function initObjects(spr) {
   }
   global.player = objs.yuu
   return objs
-}
-
-function initMaps(spr, objs) {
-  return {
-    Lv1: {
-      layout: [
-        [0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 9, 9, 9, 9, 9, 9, 9, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0]
-      ],
-      background: false
-    }
-  }
 }

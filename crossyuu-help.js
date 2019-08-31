@@ -9,15 +9,15 @@ function iRandomRange(n1, n2) {
 }
 
 function lerp(a, b, amt) {
-  return (1 - amt) * a + amt * b;
+  return (1 - amt) * a + amt * b
 }
 
 function lengthdir_x(len, dir) {
-  return len * Math.cos(dir * Math.PI / 180);
+  return len * Math.cos((dir * Math.PI) / 180)
 }
 
 function lengthdir_y(len, dir) {
-  return len * Math.sin(dir * Math.PI / 180);
+  return len * Math.sin((dir * Math.PI) / 180)
 }
 
 function keyboardCheckPressed(key) {
@@ -46,11 +46,13 @@ function Img(image, x, y) {
   }
 }
 
-function roomRestart(map, objs, spr) {
+function roomRestart(map, spr) {
   room.background = new Img(0, 0, map.background)
+  room.map = map
+  map.layout = JSON.parse(JSON.stringify(map.proto_layout))
   // add yuu
-  map.yuu = objs.yuu
-  map.yuu.restart(1, 1)
+  map.yuu = global.player
+  map.yuu.restart(...map.player_pos)
   // add car spawners
   map.spawners = []
   map.obstacles = []
@@ -58,16 +60,19 @@ function roomRestart(map, objs, spr) {
   let y = 0
   for (let col of map.layout) {
     for (let cell of col) {
-      if (cell == 3) {
-        // car spawner right
-        map.spawners.push(
-          new Spawner(x, y, spr.car, 'car', 'right')
-        )
-      } else if (cell == 5) {
-        // car spawner left
-        map.spawners.push(
-          new Spawner(x, y, spr.car, 'car', 'left')
-        )
+      if (cell > 2 && cell < 9) {
+        switch(cell) {
+          case 2:
+          case 3:
+          case 4:
+          case 5:
+          case 6:
+          case 7:
+          case 8:
+            var _sprites = [spr.car]
+        }
+        var _offset = iRandomRange(1, 50)
+        map.spawners.push(new Spawner(x, y, cell, _sprites, _offset))
       }
       y++
     }

@@ -1,8 +1,10 @@
 var game = new Vue({
   el: '#game',
   data: {
+    maps: [],
     states: states,
-    state: states.mainMenu,
+    state: states.titleScreen,
+    lastLevel: null,
     coins: 0,
     costumes: [
       {
@@ -11,7 +13,8 @@ var game = new Vue({
         effect: 'No effect',
         image: sprites.yuu,
         spr: 'yuu',
-        unlocked: true
+        unlocked: true,
+        price: null
       },
       {
         name: 'Mika',
@@ -29,7 +32,7 @@ var game = new Vue({
         image: sprites.flower_crown,
         spr: 'flower_crown',
         unlocked: false,
-        price: 5
+        price: 10
       },
       {
         name: 'Possession',
@@ -38,7 +41,7 @@ var game = new Vue({
         image: sprites.yuu,
         spr: 'yuu',
         unlocked: false,
-        price: 10
+        price: 15
       },
       {
         name: 'Doll Yuu',
@@ -56,7 +59,7 @@ var game = new Vue({
         image: sprites.yuu,
         spr: 'yuu',
         unlocked: false,
-        price: 10
+        price: 15
       },
       {
         name: 'Guren',
@@ -105,17 +108,22 @@ var game = new Vue({
     mainMenu() {
       this.state = states.mainMenu
     },
+    levelSelect() {
+      this.state = states.levelSelect
+    },
     selectCostume() {
       if (this.costume.unlocked) {
         this.usingCostume = this.costume.name
         global.player.setImage(this.costume.spr)
       }
     },
-    startLevel() {
+    startLevel(mapIndex) {
+      this.lastLevel = mapIndex
+      let map = this.maps[mapIndex]
       this.state = states.crossing
       global.keyPressed = {}
       global.pause = false
-      global.player.restart(5, 3)
+      roomRestart(map, this.sprites)
     },
     openShop() {
       this.state = states.costumes
@@ -137,6 +145,7 @@ var game = new Vue({
         return
       }
       this.coins -= currentCostume.price
+      localStorage.setItem('crossyuu-coin', this.coins)
       currentCostume.unlocked = true
       // save costumes
       let _unlocks = 0
@@ -153,10 +162,13 @@ var game = new Vue({
   },
   created() {
     // load costume unlocks
-    let _unlocks = localStorage.getItem('crossyuu-save') || 0
+    let _save = localStorage.getItem('crossyuu-save') || 0
+    let _unlocks = parseInt(_save, 16)
     for (var i = this.costumes.length - 1; i > 0; i--) {
       this.costumes[i].unlocked = _unlocks & 1
       _unlocks = _unlocks >> 1
     }
+    this.coins = localStorage.getItem('crossyuu-coin') || 0
+    RunGame()
   }
 })
