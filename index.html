@@ -29,6 +29,22 @@
             <h1>CROSSYUU ROAD</h1>
             <div class="yuu-i top centre full-width">
               <button class="button" @click="mainMenu">Play</button>
+              <button class="button" @click="saveCode">Save Code</button>
+            </div>
+          </div>
+        </div>
+        <div v-show="state==states.saveCode">
+          <div class="yuu-i container full-width">
+            <div class="yuu-i top centre">
+              <p>Enter save code:</p>
+              <input
+                type="text"
+                size="2"
+                maxlength="2"
+                v-model="savecode"
+                @keyup.enter="loadSave()"
+              />
+              <p>{{ error }}</p>
             </div>
           </div>
         </div>

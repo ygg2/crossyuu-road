@@ -27,7 +27,7 @@ function Spawner(x, y, type, spr, offset) {
   this.spawn = global.spawners[type].spawn
   this.speed = global.spawners[type].speed
   this.sprites = spr
-  this.variance = Math.floor(this.alarm/2)
+  this.variance = Math.floor(this.alarm / 2)
 }
 Spawner.prototype.tick = function(map) {
   this.counter++
@@ -171,12 +171,42 @@ function initObjects(spr) {
     this.id = -1
     this.mask = 3
     this.speed = 8
+    this.revival = false
+    this.revived = false
+    this.glitchy = false
+    this.glitching = false
+    this.glitchTimer = 0
   }
   Player.prototype = new Character()
+  Player.prototype.step = function(grid) {
+    if (this.glitchy) {
+      this.glitchTimer++
+      if (this.glitchTimer == 100) {
+        this.glitchTimer = 0
+        this.glitching = !this.glitching
+        if (this.glitching) {
+          this.id = 1
+          this.mask = 1
+        } else {
+          this.id = -1
+          this.mask = 3
+        }
+      }
+      grid[this.fromCell.x][this.fromCell.y] = this.id
+    }
+    Character.prototype.step.call(this, grid)
+  }
+  Player.prototype.clearOldPosition = function(grid) {
+    if (this.cell.x != this.fromCell.x || this.cell.y != this.fromCell.y) {
+      if (grid[this.fromCell.x][this.fromCell.y] == this.id || this.glitchy)
+        grid[this.fromCell.x][this.fromCell.y] = 0
+    }
+    this.oldId = this.id
+  }
   Player.prototype.draw = function() {
     this.image.draw(this.x, this.y)
-    if (this.revived) {
-      room.context.fillStyle = "white"
+    if (this.revived || this.glitching) {
+      room.context.fillStyle = 'white'
       room.context.fillRect(this.x, this.y, global.gridsize, global.gridsize)
     }
   }
@@ -213,6 +243,7 @@ function initObjects(spr) {
       car.destroyed = true
       return
     }
+    this.glitchy = false
     game.state = states.mainMenu
     this.checkInput = function() {
       return this.input
@@ -254,6 +285,7 @@ function initObjects(spr) {
     this.x = x * global.gridsize
     this.y = y * global.gridsize
     this.image.visible = true
+    this.revived = false
   }
   Player.prototype.setImage = function(sprite) {
     this.image.image = spr[sprite]
@@ -262,22 +294,22 @@ function initObjects(spr) {
     // reset defaults
     this.speed = 8
     this.revival = false
-    this.glitching = false
+    this.glitchy = false
     this.id = -1
-    switch(costume) {
-      case "Mika":
+    switch (costume) {
+      case 'Mika':
         this.speed = 16
-        break;
-      case "Possession":
+        break
+      case 'Possession':
         this.revival = true
-        break;
-      case "Glitchy Yuu":
-        this.glitching = true
-        break;
-      case "Seraph Yuu":
+        break
+      case 'Glitchy Yuu':
+        this.glitchy = true
+        break
+      case 'Seraph Yuu':
         this.id = 1
         this.mask = 1
-        break;
+        break
     }
   }
 

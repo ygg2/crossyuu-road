@@ -27,6 +27,12 @@ p {
   font-size: 3vh;
 }
 
+input[type=text] {
+  background-color: black;
+  color: white;
+  font-size: 3vh;
+}
+
 [v-cloak] {
   display: none;
 }

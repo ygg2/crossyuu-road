@@ -6,6 +6,8 @@ var game = new Vue({
     state: states.titleScreen,
     lastLevel: null,
     coins: 0,
+    savecode: '',
+    error: '',
     costumes: [
       {
         name: 'Default',
@@ -23,7 +25,7 @@ var game = new Vue({
         image: sprites.yuu,
         spr: 'yuu',
         unlocked: false,
-        price: 10,
+        price: 10
       },
       {
         name: 'Flower Crown',
@@ -108,6 +110,9 @@ var game = new Vue({
     mainMenu() {
       this.state = states.mainMenu
     },
+    saveCode() {
+      this.state = states.saveCode
+    },
     levelSelect() {
       this.state = states.levelSelect
     },
@@ -115,7 +120,6 @@ var game = new Vue({
       if (this.costume.unlocked) {
         this.usingCostume = this.costume.name
         global.player.setImage(this.costume.spr)
-        global.player.setEffect(this.costume.name)
       }
     },
     startLevel(mapIndex) {
@@ -125,6 +129,7 @@ var game = new Vue({
       global.keyPressed = {}
       global.pause = false
       roomRestart(map, this.sprites)
+      global.player.setEffect(this.costume.name)
     },
     openShop() {
       this.state = states.costumes
@@ -148,6 +153,25 @@ var game = new Vue({
       this.coins -= currentCostume.price
       localStorage.setItem('crossyuu-coin', this.coins)
       currentCostume.unlocked = true
+      this.saveCostumes()
+    },
+    loadUnlocks(unlocks) {
+      let _unlocks = parseInt(unlocks, 16)
+      for (var i = this.costumes.length - 1; i > 0; i--) {
+        this.costumes[i].unlocked = _unlocks & 1
+        _unlocks = _unlocks >> 1
+      }
+    },
+    loadSave() {
+      if (isNaN(parseInt(this.savecode, 16))) {
+        this.error = 'Your save code appears to be invalid.'
+      } else {
+        this.loadUnlocks(this.savecode)
+        this.saveCostumes()
+        this.mainMenu()
+      }
+    },
+    saveCostumes() {
       // save costumes
       let _unlocks = 0
       for (var i = 1; i < this.costumes.length; i++) {
@@ -159,13 +183,6 @@ var game = new Vue({
       // save code
       yeet(_unlocks.toString(16))
       localStorage.setItem('crossyuu-save', _unlocks.toString(16))
-    },
-    loadUnlocks(unlocks) {
-      let _unlocks = parseInt(unlocks, 16)
-      for (var i = this.costumes.length - 1; i > 0; i--) {
-        this.costumes[i].unlocked = _unlocks & 1
-        _unlocks = _unlocks >> 1
-      }
     }
   },
   created() {

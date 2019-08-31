@@ -4,7 +4,8 @@ window.states = {
   costumes: 2,
   levelSelect: 3,
   titleScreen: 4,
-  levelEnd: 5
+  levelEnd: 5,
+  saveCode: 6
 }
 
 window.global = {
