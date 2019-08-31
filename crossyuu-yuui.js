@@ -23,7 +23,7 @@ var game = new Vue({
         image: sprites.yuu,
         spr: 'yuu',
         unlocked: false,
-        price: 10
+        price: 10,
       },
       {
         name: 'Flower Crown',
@@ -36,7 +36,7 @@ var game = new Vue({
       },
       {
         name: 'Possession',
-        desc: 'Asuramaru\'s got some sweet healing powers.',
+        desc: "Asuramaru's got some sweet healing powers.",
         effect: 'One-time revival',
         image: sprites.yuu,
         spr: 'yuu',
@@ -115,6 +115,7 @@ var game = new Vue({
       if (this.costume.unlocked) {
         this.usingCostume = this.costume.name
         global.player.setImage(this.costume.spr)
+        global.player.setEffect(this.costume.name)
       }
     },
     startLevel(mapIndex) {
@@ -150,24 +151,27 @@ var game = new Vue({
       // save costumes
       let _unlocks = 0
       for (var i = 1; i < this.costumes.length; i++) {
-        _unlocks = _unlocks | this.costumes[i].unlocked;
-        _unlocks = _unlocks << 1;
+        _unlocks = _unlocks | this.costumes[i].unlocked
+        _unlocks = _unlocks << 1
       }
       // trim extra bit
-      _unlocks = _unlocks >> 1;
+      _unlocks = _unlocks >> 1
       // save code
       yeet(_unlocks.toString(16))
       localStorage.setItem('crossyuu-save', _unlocks.toString(16))
+    },
+    loadUnlocks(unlocks) {
+      let _unlocks = parseInt(unlocks, 16)
+      for (var i = this.costumes.length - 1; i > 0; i--) {
+        this.costumes[i].unlocked = _unlocks & 1
+        _unlocks = _unlocks >> 1
+      }
     }
   },
   created() {
     // load costume unlocks
     let _save = localStorage.getItem('crossyuu-save') || 0
-    let _unlocks = parseInt(_save, 16)
-    for (var i = this.costumes.length - 1; i > 0; i--) {
-      this.costumes[i].unlocked = _unlocks & 1
-      _unlocks = _unlocks >> 1
-    }
+    this.loadUnlocks(_save)
     this.coins = localStorage.getItem('crossyuu-coin') || 0
     RunGame()
   }

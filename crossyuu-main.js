@@ -27,7 +27,7 @@ function update() {
       deletion = true
     }
     if (map.layout[obstacle.cell.x][obstacle.cell.y] == -1) {
-      map.yuu.destroy()
+      map.yuu.destroy(obstacle)
       map.layout[obstacle.cell.x][obstacle.cell.y] = 0
     }
   }

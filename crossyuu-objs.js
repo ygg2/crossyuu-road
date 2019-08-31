@@ -97,7 +97,7 @@ function Character(img, inputs, x, y, speed) {
   this.cell.y = y || 0
   this.fromCell.x = x || 0
   this.fromCell.y = y || 0
-  this.id = 7
+  this.id = 6
   this.destroyed = false
 }
 Character.prototype.draw = function() {
@@ -173,6 +173,13 @@ function initObjects(spr) {
     this.speed = 8
   }
   Player.prototype = new Character()
+  Player.prototype.draw = function() {
+    this.image.draw(this.x, this.y)
+    if (this.revived) {
+      room.context.fillStyle = "white"
+      room.context.fillRect(this.x, this.y, global.gridsize, global.gridsize)
+    }
+  }
   Player.prototype.checkInput = function() {
     return {
       right: keyboardCheckPressed(global.keymap.right),
@@ -199,7 +206,13 @@ function initObjects(spr) {
     }
     return true
   }
-  Player.prototype.destroy = function() {
+  Player.prototype.destroy = function(car) {
+    if (this.revival) {
+      this.revival = false
+      this.revived = true
+      car.destroyed = true
+      return
+    }
     game.state = states.mainMenu
     this.checkInput = function() {
       return this.input
@@ -244,6 +257,28 @@ function initObjects(spr) {
   }
   Player.prototype.setImage = function(sprite) {
     this.image.image = spr[sprite]
+  }
+  Player.prototype.setEffect = function(costume) {
+    // reset defaults
+    this.speed = 8
+    this.revival = false
+    this.glitching = false
+    this.id = -1
+    switch(costume) {
+      case "Mika":
+        this.speed = 16
+        break;
+      case "Possession":
+        this.revival = true
+        break;
+      case "Glitchy Yuu":
+        this.glitching = true
+        break;
+      case "Seraph Yuu":
+        this.id = 1
+        this.mask = 1
+        break;
+    }
   }
 
   var objs = {
