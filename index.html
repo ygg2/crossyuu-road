@@ -18,8 +18,11 @@
         It looks like your browser doesn't support canvas.
       </canvas>
       <div v-cloak id="game">
-        <div v-show="state!=states.titleScreen" class="yuu-i padded">
-          <p>Coins: {{ coins }}</p>
+        <div
+          v-show="state!=states.titleScreen"
+          class="yuu-i container full-width"
+        >
+          <p class="yuu-i right">Coins: {{ coins }}</p>
         </div>
         <div v-show="state==states.titleScreen">
           <div class="yuu-i vertical container">
