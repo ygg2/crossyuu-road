@@ -156,7 +156,7 @@ Character.prototype.collision = function(grid, amount, vertical = false) {
     }
   }
   var space = grid[toX][toY]
-  if (space & this.mask) {
+  if (space & this.mask || space == 2) {
     return this.collideWith(space, grid, toX, toY)
   }
   return false
