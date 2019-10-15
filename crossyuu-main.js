@@ -9,7 +9,8 @@ function createRoom() {
       })
     },
     clear() {
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
+      this.context.fillStyle = '#22896E'
+      this.context.fillRect(0, 0, this.canvas.width, this.canvas.height)
     }
   }
   room.setup()
@@ -45,48 +46,28 @@ function render() {
   let drawy = map.yuu.y - room.canvas.height / 2
   room.context.save()
   room.context.translate(-global.xoffset, -drawy)
-  room.background.draw()
-  map.yuu.draw()
+  // block drawing
+  for (let wall of map.walls) {
+    wall.draw()
+  }
+  let x = 0,
+    y = 0
+  for (let col of map.layout) {
+    for (let cell of col) {
+      if (cell == 9) {
+        map.coin.x = x * global.gridsize
+        map.coin.y = y * global.gridsize
+        map.coin.draw()
+      }
+      y++
+    }
+    y = 0
+    x++
+  }
   for (let obstacle of map.obstacles) {
     obstacle.draw()
   }
-  // block drawing
-  if (global.debug) {
-    let x = 0,
-      y = 0
-    for (let col of map.layout) {
-      for (let cell of col) {
-        if (cell == 1) {
-          room.context.fillStyle = 'rgba(0,255,0,.5)'
-          room.context.fillRect(
-            x * global.gridsize,
-            y * global.gridsize,
-            global.gridsize,
-            global.gridsize
-          )
-        } else if (cell == -1) {
-          room.context.fillStyle = 'rgba(255, 0, 0, .5)'
-          room.context.fillRect(
-            x * global.gridsize,
-            y * global.gridsize,
-            global.gridsize,
-            global.gridsize
-          )
-        } else if (cell == 9) {
-          room.context.fillStyle = 'rgba(255, 255, 0, .5)'
-          room.context.fillRect(
-            x * global.gridsize,
-            y * global.gridsize,
-            global.gridsize,
-            global.gridsize
-          )
-        }
-        y++
-      }
-      y = 0
-      x++
-    }
-  }
+  map.yuu.draw()
   let _any_done = false
   for (let effect of room.effects) {
     effect.timer++

@@ -29,13 +29,15 @@
             <h1>CROSSYUU ROAD</h1>
             <div class="yuu-i top centre full-width">
               <button class="button" @click="mainMenu">Play</button>
-              <button class="button" @click="saveCode">Save Code</button>
             </div>
           </div>
         </div>
         <div v-show="state==states.saveCode">
-          <div class="yuu-i container full-width">
+          <div class="yuu-i container full-width primary">
+            <button class="yuu-i button left" @click="openShop">Back</button>
+            <p class="yuu-i right">Current Code: {{ currentSave }}</p>
             <div class="yuu-i top centre">
+              <p>Save codes let you load your costumes in other browsers or in a private window where the local storage is cleared.</p>
               <p>Enter save code:</p>
               <input
                 type="text"
@@ -75,7 +77,7 @@
         <div v-show="state==states.levelSelect">
           <button class="yuu-i button" @click="mainMenu">Back</button>
           <div class="yuu-i top centre full-width padded">
-            <div class="container">
+            <div class="container flex-wrap">
               <div v-for="map, index of maps" class="level-select">
                 <button
                   class="button full-width magictime swashIn"
@@ -89,7 +91,7 @@
         </div>
         <transition name="fade">
           <div v-show="state==states.costumes">
-            <div class="yuu-i vertical container padded primary">
+            <div class="yuu-i vertical container padded primary full-width">
               <h3>Costumes</h3>
               <div class="horizontal container">
                 <button class="button" @click="viewCostume(-1)"><</button>
@@ -135,7 +137,8 @@
                 <button class="button" @click="viewCostume(1)">></button>
               </div>
             </div>
-            <button class="yuu-i button" @click="mainMenu">Back</button>
+            <button class="yuu-i button left" @click="mainMenu">Back</button>
+            <button class="yuu-i button right" @click="saveCode">Save Code</button>
           </div>
         </transition>
       </div>

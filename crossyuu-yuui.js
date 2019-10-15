@@ -7,6 +7,7 @@ var game = new Vue({
     lastLevel: null,
     coins: 0,
     savecode: '',
+    currentSave: '00',
     error: '',
     costumes: [
       {
@@ -22,8 +23,8 @@ var game = new Vue({
         name: 'Mika',
         desc: 'Get carried across the road.',
         effect: 'Speed x2',
-        image: sprites.yuu,
-        spr: 'yuu',
+        image: sprites.mika,
+        spr: 'mika',
         unlocked: false,
         price: 10
       },
@@ -49,8 +50,8 @@ var game = new Vue({
         name: 'Doll Yuu',
         desc: 'Yikes! Did it just move?',
         effect: 'No effect',
-        image: sprites.yuu,
-        spr: 'yuu',
+        image: sprites.doll,
+        spr: 'doll',
         unlocked: false,
         price: 5
       },
@@ -76,8 +77,8 @@ var game = new Vue({
         name: 'Mitsuba',
         desc: 'Best girl, obviously.',
         effect: 'No effect',
-        image: sprites.yuu,
-        spr: 'yuu',
+        image: sprites.mitsuba,
+        spr: 'mitsuba',
         unlocked: false,
         price: 5
       },
@@ -85,8 +86,8 @@ var game = new Vue({
         name: 'Seraph Yuu',
         desc: 'Congratulations!! You beat the game!!',
         effect: 'Complete invincibility',
-        image: sprites.yuu,
-        spr: 'yuu',
+        image: sprites.seraph,
+        spr: 'seraph',
         unlocked: false,
         price: null
       }
@@ -129,7 +130,7 @@ var game = new Vue({
       global.keyPressed = {}
       global.pause = false
       roomRestart(map, this.sprites)
-      global.player.setEffect(this.costume.name)
+      global.player.setEffect(this.usingCostume)
     },
     openShop() {
       this.state = states.costumes
@@ -161,6 +162,7 @@ var game = new Vue({
         this.costumes[i].unlocked = _unlocks & 1
         _unlocks = _unlocks >> 1
       }
+      this.currentSave = unlocks
     },
     loadSave() {
       if (isNaN(parseInt(this.savecode, 16))) {
@@ -181,8 +183,8 @@ var game = new Vue({
       // trim extra bit
       _unlocks = _unlocks >> 1
       // save code
-      yeet(_unlocks.toString(16))
-      localStorage.setItem('crossyuu-save', _unlocks.toString(16))
+      this.currentSave = _unlocks.toString(16)
+      localStorage.setItem('crossyuu-save', this.currentSave)
     }
   },
   created() {

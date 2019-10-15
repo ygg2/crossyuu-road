@@ -19,14 +19,15 @@ function loadImages(images) {
   })
 }
 
-function Spawner(x, y, type, spr, offset) {
-  this.x = x || 0
+function Spawner(x, y, type, spr, offset, xoffset) {
+  this.x = (x + (global.spawners[type].spawn.left ? -1 : 1)) || 0
   this.y = y || 0
   this.counter = global.spawners[type].alarm - offset
   this.alarm = global.spawners[type].alarm
   this.spawn = global.spawners[type].spawn
   this.speed = global.spawners[type].speed
   this.sprites = spr
+  this.xoffset = xoffset
   this.variance = Math.floor(this.alarm / 2)
 }
 Spawner.prototype.tick = function(map) {
@@ -36,7 +37,14 @@ Spawner.prototype.tick = function(map) {
     // choose a random sprite
     let _sprite = this.sprites[iRandomRange(0, this.sprites.length - 1)]
     map.obstacles.push(
-      new Character(_sprite, this.spawn, this.x, this.y, this.speed)
+      new Character(
+        _sprite,
+        this.spawn,
+        this.x,
+        this.y,
+        this.speed,
+        this.xoffset
+      )
     )
   }
 }
@@ -75,7 +83,7 @@ Confetti.prototype.draw = function() {
   room.context.fill()
 }
 
-function Character(img, inputs, x, y, speed) {
+function Character(img, inputs, x, y, speed, xoffset) {
   this.x = x * global.gridsize || 0
   this.y = y * global.gridsize || 0
   this.image = new Img(img)
@@ -99,15 +107,18 @@ function Character(img, inputs, x, y, speed) {
   this.fromCell.y = y || 0
   this.id = 6
   this.destroyed = false
+  this.xoffset = xoffset || 0
+  this.time = 0
 }
 Character.prototype.draw = function() {
-  this.image.draw(this.x, this.y)
+  this.image.draw(this.x + this.xoffset, this.y)
 }
 Character.prototype.step = function(grid) {
   if (onGrid(this)) {
     this.clearOldPosition(grid)
     this.hsp = 0
     this.vsp = 0
+    this.time = 0
     var input = this.checkInput()
     var horizontal = input.right - input.left
     var vertical = input.down - input.up
@@ -119,7 +130,7 @@ Character.prototype.step = function(grid) {
       this.cell.x += horizontal
       if (grid[this.cell.x][this.cell.y] == 0) {
         grid[this.cell.x][this.cell.y] = this.id
-        this.clearOldPosition(grid)
+        if (this.id == -1 || this.id == 1) this.clearOldPosition(grid)
       }
     } else if (vertical != 0 && !this.collision(grid, vertical, true)) {
       this.vsp = vertical * this.speed
@@ -127,12 +138,32 @@ Character.prototype.step = function(grid) {
       this.cell.y += vertical
       if (grid[this.cell.x][this.cell.y] == 0) {
         grid[this.cell.x][this.cell.y] = this.id
-        this.clearOldPosition(grid)
+        if (this.id == -1 || this.id == 1) this.clearOldPosition(grid)
       }
     }
   }
+  this.time++
   this.x += this.hsp
-  this.y += this.vsp
+  if (this.id == -1 || this.id == 1) {
+    if (this.speed == 16)
+      this.y = Math.floor(
+        twerp_out_back(
+          this.fromCell.y * global.gridsize,
+          this.cell.y * global.gridsize,
+          this.time / (global.gridsize / this.speed),
+          1.02
+        )
+      )
+    else
+      this.y = Math.floor(
+        twerp_out_back(
+          this.fromCell.y * global.gridsize,
+          this.cell.y * global.gridsize,
+          this.time / (global.gridsize / this.speed),
+          1.1
+        )
+      )
+  }
   return this.destroyed
 }
 Character.prototype.clearOldPosition = function(grid) {
@@ -176,6 +207,7 @@ function initObjects(spr) {
     this.glitchy = false
     this.glitching = false
     this.glitchTimer = 0
+    this.glow = new Img(spr.glow, 0, 0)
   }
   Player.prototype = new Character()
   Player.prototype.step = function(grid) {
@@ -205,8 +237,10 @@ function initObjects(spr) {
   }
   Player.prototype.draw = function() {
     this.image.draw(this.x, this.y)
-    if (this.revived || this.glitching) {
-      room.context.fillStyle = 'white'
+    if (this.revived) {
+      this.glow.draw(this.x, this.y)
+    } else if (this.glitching && this.glitchTimer % 10 == 0) {
+      room.context.fillStyle = '#8CFF9B88'
       room.context.fillRect(this.x, this.y, global.gridsize, global.gridsize)
     }
   }
