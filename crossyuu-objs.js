@@ -330,6 +330,7 @@ function initObjects(spr) {
     this.revival = false
     this.glitchy = false
     this.id = -1
+    this.mask = 3
     switch (costume) {
       case 'Mika':
         this.speed = 16
