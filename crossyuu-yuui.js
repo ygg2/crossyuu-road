@@ -109,6 +109,7 @@ var game = new Vue({
     },
     saveCode() {
       this.savecode = ''
+      this.error = ''
       this.state = states.saveCode
     },
     addToSaveCode(str) {
