@@ -39,9 +39,9 @@
           <div class="yuu-i container full-width primary">
             <button class="yuu-i button left" @click="openShop">Back</button>
             <p class="yuu-i right">Current Code: {{ currentSave }}</p>
-            <div class="yuu-i centre">
-              <p>Save codes let you load your costumes in other browsers or in a private window where the local storage is cleared.</p>
-              <p>Enter save code:</p>
+            <div class="yuu-i centre full-width padded">
+              <p>Save codes let you load your costumes in other browsers or in a private window.</p>
+              <p style="display: inline-block">Enter save code:</p>
               <input
                 type="text"
                 size="3"
@@ -50,8 +50,8 @@
                 v-model="savecode"
                 @keyup.enter="loadSave()"
               />
-              <p>{{ error }}</p>
-              <div class="container flex-wrap save-code">
+              <p v-if="error!=''">{{ error }}</p>
+              <div class="container flex-wrap save-code padded">
                 <button
                   v-for="i in 10"
                   class="button"
@@ -145,8 +145,6 @@
                           class="image-costume"
                         />
                         <p v-if="costume.unlocked">{{ costume.desc }}</p>
-                        <p v-if="costume.unlocked">{{ costume.effect }}</p>
-                        <p v-else>Effect unknown</p>
                         <button
                           v-if="costume.unlocked"
                           class="button"
@@ -165,6 +163,8 @@
                         >
                           Unlock ({{ costume.price }})
                         </button>
+                        <p v-if="costume.unlocked">{{ costume.effect }}</p>
+                        <p v-else>Effect unknown</p>
                       </div>
                     </transition>
                   </div>

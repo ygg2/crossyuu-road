@@ -100,7 +100,7 @@ var game = new Vue({
     },
     iOSHeight() {
       // fix height in safari ios
-      return document.documentElement.clientHeight.toString(10) + 'px'
+      return window.screen.height.toString(10) + 'px'
     }
   },
   methods: {
