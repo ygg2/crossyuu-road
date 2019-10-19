@@ -104,7 +104,13 @@ var game = new Vue({
       this.state = states.mainMenu
     },
     saveCode() {
+      this.savecode = ''
       this.state = states.saveCode
+    },
+    addToSaveCode(str) {
+      if (this.savecode.length < 3) {
+        this.savecode += str
+      }
     },
     levelSelect() {
       this.state = states.levelSelect
@@ -149,7 +155,6 @@ var game = new Vue({
     },
     loadUnlocks(unlocks) {
       let _unlocks = parseInt(unlocks, 16)
-      yeet(unlocks)
       // load levels
       this.levelsUnlocked = parseInt(unlocks[0], 16)
       // load costumes

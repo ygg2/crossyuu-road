@@ -76,6 +76,17 @@ input[type='text'] {
   margin: 0;
 }
 
+.save-code .button {
+  width: 21%;
+  box-sizing: border-box;
+  margin: 2%;
+  border-radius: .5em;
+}
+
+.save-code .button.full-width {
+  width: 96%;
+}
+
 .yuu-i-wrapper {
   width: 0;
   height: 100vh;

@@ -1,9 +1,3 @@
-function yeet(message) {
-  if (global.debug) {
-    console.log(message)
-  }
-}
-
 function twerp_out_back(start, end, position, option) {
   var _chng = end - start
   var _b = option || 1.5
@@ -33,6 +27,10 @@ function keyboardCheckPressed(key) {
     return true
   }
   return false
+}
+
+function keyboardKeyPress(key) {
+  global.keyPressed[key] = true
 }
 
 function onGrid(obj) {

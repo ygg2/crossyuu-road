@@ -95,18 +95,12 @@ var rAF =
   window.mozRequestAnimationFrame
 
 async function RunGame() {
-  yeet('Run Game')
-  yeet('Loading images')
   var sprites = await loadImages(window.sprites)
-  yeet('Creating room')
   window.room = createRoom()
-  yeet('Creating objects')
   var objs = initObjects(sprites)
-  yeet('Creating maps')
   var maps = initMaps(sprites, objs)
   game.sprites = sprites
   game.maps = maps
   roomRestart(maps[0], sprites)
-  yeet('Starting main')
   main()
 }

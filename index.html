@@ -37,17 +37,37 @@
           <div class="yuu-i container full-width primary">
             <button class="yuu-i button left" @click="openShop">Back</button>
             <p class="yuu-i right">Current Code: {{ currentSave }}</p>
-            <div class="yuu-i top centre">
+            <div class="yuu-i centre">
               <p>Save codes let you load your costumes in other browsers or in a private window where the local storage is cleared.</p>
               <p>Enter save code:</p>
               <input
                 type="text"
                 size="3"
                 maxlength="3"
+                focused
                 v-model="savecode"
                 @keyup.enter="loadSave()"
               />
               <p>{{ error }}</p>
+              <div class="container flex-wrap save-code">
+                <button
+                  v-for="i in 10"
+                  class="button"
+                  @click="addToSaveCode(i - 1)"
+                >
+                  {{ i - 1 }}
+                </button>
+                <button
+                  v-for="l in 'ABCDEF'"
+                  class="button"
+                  @click="addToSaveCode(l)"
+                >
+                  {{ l }}
+                </button>
+                <button class="button full-width" @click="loadSave()">
+                  Enter
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -161,7 +181,9 @@
     <script src="crossyuu-data.js"></script>
     <script src="crossyuu-objs.js"></script>
     <script src="crossyuu-main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
     <script src="crossyuu-yuui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/zingtouch/1.0.6/zingtouch.min.js"></script>
+    <script src="crossyuu-zing.js"></script>
   </body>
 </html>
