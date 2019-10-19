@@ -178,3 +178,9 @@ input[type='text'] {
 .fade-leave-to {
   opacity: 0;
 }
+
+@media screen and (max-width:769px) {
+  body {
+    font-size: 3vh;
+  }
+}
