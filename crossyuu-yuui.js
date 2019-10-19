@@ -97,6 +97,10 @@ var game = new Vue({
     },
     cardSwapLeave() {
       return 'magictime spaceOut' + (this.forward ? 'Left' : 'Right')
+    },
+    iOSHeight() {
+      // fix height in safari ios
+      return window.innerHeight.toString(10) + 'px'
     }
   },
   methods: {
