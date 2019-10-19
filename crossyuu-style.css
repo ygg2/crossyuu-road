@@ -18,7 +18,6 @@ body {
 }
 
 canvas {
-  max-height: 100vh;
   line-height: 0;
 }
 
@@ -42,7 +41,7 @@ input[type='text'] {
   display: none;
 }
 
-#game {
+#yuu-is{
   pointer-events: none;
 }
 
@@ -98,7 +97,6 @@ input[type='text'] {
 
 .yuu-i-wrapper {
   width: 0;
-  padding-right: 56.25vh;
   position: relative;
 }
 

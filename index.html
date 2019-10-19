@@ -13,13 +13,13 @@
   </head>
 
   <body>
-    <div class="yuu-i-wrapper" :style="iOSHeight">
-      <canvas id="crossyuu-canvas" width="540" height="960">
+    <div v-cloak id="game" class="yuu-i-wrapper" :style="iOSHeight">
+      <canvas id="crossyuu-canvas" width="540" height="960" :style="iOSHeight">
         It looks like your browser doesn't support canvas.
       </canvas>
       <div id="touch-events" class="yuu-i container full-width">
       </div>
-      <div v-cloak id="game">
+      <div id="yuu-is">
         <div
           v-show="state!=states.titleScreen"
           class="yuu-i container full-width"
@@ -50,7 +50,6 @@
                 v-model="savecode"
                 @keyup.enter="loadSave()"
               />
-              <p v-if="error!=''">{{ error }}</p>
               <div class="container flex-wrap save-code padded">
                 <button
                   v-for="i in 10"

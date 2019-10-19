@@ -10,6 +10,7 @@ var game = new Vue({
     savecode: '',
     currentSave: '00',
     error: '',
+    windowHeight: window.innerHeight,
     costumes: [
       {
         name: 'Default',
@@ -100,7 +101,10 @@ var game = new Vue({
     },
     iOSHeight() {
       // fix height in safari ios
-      return window.screen.height.toString(10) + 'px'
+      return {
+        height: this.windowHeight.toString(10) + 'px',
+        width: (this.windowHeight * 0.5625).toString(10) + 'px'
+      }
     }
   },
   methods: {
@@ -109,7 +113,6 @@ var game = new Vue({
     },
     saveCode() {
       this.savecode = ''
-      this.error = ''
       this.state = states.saveCode
     },
     addToSaveCode(str) {
@@ -171,12 +174,11 @@ var game = new Vue({
     },
     loadSave() {
       if (isNaN(parseInt(this.savecode, 16))) {
-        this.error = 'Save code invalid.'
-      } else {
-        this.loadUnlocks(this.savecode)
-        this.saveCostumes()
-        this.mainMenu()
+        this.savecode = '000'
       }
+      this.loadUnlocks(this.savecode)
+      this.saveCostumes()
+      this.mainMenu()
     },
     saveCostumes() {
       // save costumes
@@ -188,7 +190,8 @@ var game = new Vue({
       // trim extra bit
       _unlocks = _unlocks >> 1
       // save code
-      this.currentSave = this.levelsUnlocked.toString(16) + _unlocks.toString(16)
+      this.currentSave =
+        this.levelsUnlocked.toString(16) + _unlocks.toString(16)
       localStorage.setItem('crossyuu-save', this.currentSave)
     },
     finishLevel(lastLevel) {
@@ -204,8 +207,11 @@ var game = new Vue({
     }
   },
   created() {
+    window.addEventListener('resize', () => {
+      this.windowHeight = window.innerHeight
+    })
     // load costume unlocks
-    let _save = localStorage.getItem('crossyuu-save') || "000"
+    let _save = localStorage.getItem('crossyuu-save') || '000'
     this.loadUnlocks(_save)
     this.coins = localStorage.getItem('crossyuu-coin') || 0
     RunGame()
