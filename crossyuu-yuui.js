@@ -171,7 +171,7 @@ var game = new Vue({
     },
     loadSave() {
       if (isNaN(parseInt(this.savecode, 16))) {
-        this.error = 'Your save code appears to be invalid.'
+        this.error = 'Save code invalid.'
       } else {
         this.loadUnlocks(this.savecode)
         this.saveCostumes()

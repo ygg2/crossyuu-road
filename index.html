@@ -127,7 +127,7 @@
         <transition name="fade">
           <div v-show="state==states.costumes">
             <div class="yuu-i vertical container padded primary full-width">
-              <h3>Costumes</h3>
+              <h4 style="margin-top:2.5rem">Costumes</h4>
               <div class="horizontal container">
                 <button class="button" @click="viewCostume(-1)"><</button>
                 <div class="expand">
@@ -138,7 +138,7 @@
                       :leave-active-class="cardSwapLeave"
                     >
                       <div :key="costume.name">
-                        <h3>{{ costume.name }}</h3>
+                        <h4>{{ costume.name }}</h4>
                         <img
                           :src="'spr/' + costume.spr + '.png'"
                           :class="{ locked: !costume.unlocked }"
