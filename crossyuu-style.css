@@ -94,7 +94,7 @@ input[type='text'] {
 
 .yuu-i-wrapper {
   width: 0;
-  height: 100vh;
+  height: 100%;
   padding-right: 56.25vh;
   position: relative;
 }
