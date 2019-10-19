@@ -1,4 +1,4 @@
-var touchArea = new ZingTouch.Region(document.body);
+var touchArea = new ZingTouch.Region(document.getElementById('touch-events'));
 
 var wholeScreen = document.getElementById("crossyuu-canvas");
 

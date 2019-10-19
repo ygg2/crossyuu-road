@@ -38,6 +38,10 @@ input[type='text'] {
   display: none;
 }
 
+#game {
+  pointer-events: none;
+}
+
 .button {
   background: #a52639;
   color: #ff6eaf;
@@ -49,6 +53,7 @@ input[type='text'] {
   font-size: 3vh;
   font-family: 'Varela Round', sans-serif;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .button:hover {
