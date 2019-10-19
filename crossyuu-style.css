@@ -27,9 +27,11 @@ p {
 }
 
 input[type='text'] {
-  background-color: black;
+  background: transparent;
   color: white;
+  border: 2px solid white;
   font-size: 3vh;
+  text-align: center;
 }
 
 [v-cloak] {
@@ -57,10 +59,11 @@ input[type='text'] {
 .button:disabled {
   background: #723352;
   color: #3f1f3c;
+  cursor: not-allowed;
 }
 
 .primary {
-  background: #000000aa;
+  background: #00000099;
 }
 
 .level-select {
@@ -149,6 +152,9 @@ input[type='text'] {
 
 .image-costume {
   max-height: 15vh;
+  background: #ff6eaf;
+  border-radius: 1em;
+  padding: 1em;
 }
 
 .fade-enter-active,

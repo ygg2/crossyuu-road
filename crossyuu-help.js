@@ -90,6 +90,7 @@ function roomRestart(map, spr) {
         switch (cell) {
           case 3:
           case 5:
+          case 7:
             var _sprites = [
               spr.car_r,
               spr.car_3_r,
@@ -102,7 +103,6 @@ function roomRestart(map, spr) {
             break
           case 4:
           case 6:
-          case 7:
           case 8:
             var _sprites = [
               spr.car,

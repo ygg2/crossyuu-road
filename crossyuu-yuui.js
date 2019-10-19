@@ -5,6 +5,7 @@ var game = new Vue({
     states: states,
     state: states.titleScreen,
     lastLevel: null,
+    levelsUnlocked: 0,
     coins: 0,
     savecode: '',
     currentSave: '00',
@@ -14,7 +15,6 @@ var game = new Vue({
         name: 'Default',
         desc: 'Yuu can definitely do it!',
         effect: 'No effect',
-        image: sprites.yuu,
         spr: 'yuu',
         unlocked: true,
         price: null
@@ -23,7 +23,6 @@ var game = new Vue({
         name: 'Mika',
         desc: 'Get carried across the road.',
         effect: 'Speed x2',
-        image: sprites.mika,
         spr: 'mika',
         unlocked: false,
         price: 10
@@ -32,7 +31,6 @@ var game = new Vue({
         name: 'Flower Crown',
         desc: 'Cross the street in style.',
         effect: 'No effect',
-        image: sprites.flower_crown,
         spr: 'flower_crown',
         unlocked: false,
         price: 10
@@ -41,7 +39,6 @@ var game = new Vue({
         name: 'Possession',
         desc: "Asuramaru's got some sweet healing powers.",
         effect: 'One-time revival',
-        image: sprites.yuu,
         spr: 'yuu',
         unlocked: false,
         price: 15
@@ -50,7 +47,6 @@ var game = new Vue({
         name: 'Doll Yuu',
         desc: 'Yikes! Did it just move?',
         effect: 'No effect',
-        image: sprites.doll,
         spr: 'doll',
         unlocked: false,
         price: 5
@@ -59,7 +55,6 @@ var game = new Vue({
         name: 'Glitchy Yuu',
         desc: 'Reference Error: yuu.mask is undefined',
         effect: 'Invincibility while glitching',
-        image: sprites.yuu,
         spr: 'yuu',
         unlocked: false,
         price: 15
@@ -68,17 +63,14 @@ var game = new Vue({
         name: 'Guren',
         desc: 'The Unparalleled Ichinose!',
         effect: 'No effect',
-        image: sprites.yuu,
-        spr: 'yuu',
+        spr: 'guren',
         unlocked: false,
         price: 5
       },
       {
         name: 'Mitsuba',
         desc: 'Best girl, obviously.',
-        effect: 'No effect',
-        image: sprites.mitsuba,
-        spr: 'mitsuba',
+        spr: 'mitsu',
         unlocked: false,
         price: 5
       },
@@ -86,7 +78,6 @@ var game = new Vue({
         name: 'Seraph Yuu',
         desc: 'Congratulations!! You beat the game!!',
         effect: 'Complete invincibility',
-        image: sprites.seraph,
         spr: 'seraph',
         unlocked: false,
         price: null
@@ -94,6 +85,7 @@ var game = new Vue({
     ],
     costumeIndex: 0,
     usingCostume: 'Default',
+    costumeSprite: null,
     forward: true // direction of card swap
   },
   computed: {
@@ -148,7 +140,6 @@ var game = new Vue({
     },
     unlock(currentCostume) {
       if (this.coins < currentCostume.price) {
-        yeet('you dun have enuff coinz')
         return
       }
       this.coins -= currentCostume.price
@@ -158,6 +149,10 @@ var game = new Vue({
     },
     loadUnlocks(unlocks) {
       let _unlocks = parseInt(unlocks, 16)
+      yeet(unlocks)
+      // load levels
+      this.levelsUnlocked = parseInt(unlocks[0], 16)
+      // load costumes
       for (var i = this.costumes.length - 1; i > 0; i--) {
         this.costumes[i].unlocked = _unlocks & 1
         _unlocks = _unlocks >> 1
@@ -183,13 +178,24 @@ var game = new Vue({
       // trim extra bit
       _unlocks = _unlocks >> 1
       // save code
-      this.currentSave = _unlocks.toString(16)
+      this.currentSave = this.levelsUnlocked.toString(16) + _unlocks.toString(16)
       localStorage.setItem('crossyuu-save', this.currentSave)
+    },
+    finishLevel(lastLevel) {
+      if (lastLevel >= this.levelsUnlocked) this.levelsUnlocked = lastLevel + 1
+      this.lastLevel = lastLevel
+      game.state = states.levelEnd
+      this.saveCostumes()
+      // check win
+      if (lastLevel == this.maps.length - 1) {
+        this.unlock(this.costumes[this.costumes.length - 1])
+        game.state = states.gameEnd
+      }
     }
   },
   created() {
     // load costume unlocks
-    let _save = localStorage.getItem('crossyuu-save') || 0
+    let _save = localStorage.getItem('crossyuu-save') || "000"
     this.loadUnlocks(_save)
     this.coins = localStorage.getItem('crossyuu-coin') || 0
     RunGame()

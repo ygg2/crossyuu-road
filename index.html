@@ -26,8 +26,9 @@
         </div>
         <div v-show="state==states.titleScreen">
           <div class="yuu-i vertical container">
-            <h1>CROSSYUU ROAD</h1>
+            <img src="spr/title_screen.jpg" class="yuu-i full-width">
             <div class="yuu-i top centre full-width">
+              <h1>CROSSYUU ROAD</h1>
               <button class="button" @click="mainMenu">Play</button>
             </div>
           </div>
@@ -41,8 +42,8 @@
               <p>Enter save code:</p>
               <input
                 type="text"
-                size="2"
-                maxlength="2"
+                size="3"
+                maxlength="3"
                 v-model="savecode"
                 @keyup.enter="loadSave()"
               />
@@ -74,6 +75,17 @@
             </div>
           </div>
         </div>
+        <div v-show="state==states.gameEnd">
+          <div class="yuu-i vertical container primary">
+            <div class="yuu-i top centre full-width">
+              <h1 class="magictime puffIn">You beat the game!</h1>
+              <h3 class="magictime puffIn">
+                You've unlocked the Seraph Yuu costume!
+              </h3>
+              <button class="button" @click="mainMenu">Menu</button>
+            </div>
+          </div>
+        </div>
         <div v-show="state==states.levelSelect">
           <button class="yuu-i button" @click="mainMenu">Back</button>
           <div class="yuu-i top centre full-width padded">
@@ -82,6 +94,7 @@
                 <button
                   class="button full-width magictime swashIn"
                   @click="startLevel(index)"
+                  :disabled="index > levelsUnlocked"
                 >
                   {{ index + 1 }}
                 </button>
@@ -105,7 +118,7 @@
                       <div :key="costume.name">
                         <h3>{{ costume.name }}</h3>
                         <img
-                          :src="costume.image"
+                          :src="'spr/' + costume.spr + '.png'"
                           :class="{ locked: !costume.unlocked }"
                           class="image-costume"
                         />

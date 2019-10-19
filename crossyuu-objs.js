@@ -261,8 +261,7 @@ function initObjects(spr) {
       return false
     } else if (id == 2) {
       // end
-      game.lastLevel = room.map.index
-      game.state = states.levelEnd
+      game.finishLevel(room.map.index)
       this.checkInput = function() {
         return this.input
       }
